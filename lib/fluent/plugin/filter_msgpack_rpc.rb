@@ -2,6 +2,10 @@ module Fluent
   class MsgpackRpcFilter < Filter
     Fluent::Plugin.register_filter('msgpack_rpc', self)
 
+    config_param :port, :integer
+    config_param :host, :string, :default => 'localhost'
+    config_param :method, :string
+
     def configure(conf)
       log.debug "enter configure"
       super
@@ -13,7 +17,7 @@ module Fluent
       log.debug "enter start"
       super
 
-      @client = MessagePack::RPC::Client.new('localhost', 3000)
+      @client = MessagePack::RPC::Client.new(@host, @port)
     end
 
     def shutdown
@@ -23,7 +27,7 @@ module Fluent
 
     def filter(tag, time, record)
       log.debug "enter filter"
-      @client.call(:method, time, record)
+      @client.call(@method.intern, time, record)
       record
     end
   end
