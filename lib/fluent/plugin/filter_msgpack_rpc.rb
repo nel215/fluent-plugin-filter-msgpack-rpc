@@ -27,8 +27,8 @@ module Fluent
 
     def filter(tag, time, record)
       log.debug "enter filter"
-      @client.call(@method.intern, time, record)
-      record
+      result = @client.call(@method.intern, time, record)
+      result
     end
   end
 end
